@@ -21,6 +21,8 @@ TG_BOT_TOKEN = 'your telegram bot token'
 TG_CHAT_ID = 'your telegram chat id'
 # 填充tmdb api token
 TMDB_API_TOKEN = 'your tmdb api token'
+# 填充Emby媒体库路径
+EMBY_MEDIA_LIB_PATH = 'your emby media lib path'
 
 
 def post_movieInfo(media_dir):
@@ -244,7 +246,7 @@ if __name__ == '__main__':
     event_handler = MyHandler()
     observer = Observer()
     watch = observer.schedule(
-        event_handler, path=os.getenv('MONITOR_PATH'), recursive=True)
+        event_handler, path=EMBY_MEDIA_LIB_PATH, recursive=True)
 
     log_handler = LogHandler()
     observer.add_handler_for_watch(log_handler, watch)  # 写入日志
