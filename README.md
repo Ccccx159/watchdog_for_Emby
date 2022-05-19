@@ -15,6 +15,7 @@
 | TG_BOT_TOKEN | 电报 bot token |
 | TG_CHAT_ID | 电报频道 chat_id |
 | TMDB_API_TOKEN | TMDB api token |
+| EMBY_MEDIA_LIB_PATH| Emby 媒体库路径 |
 
 ## 参考文档
 + tmdb api 文档：https://developers.themoviedb.org/4
