@@ -22,5 +22,5 @@
 | EMBY_MEDIA_LIB_PATH| Emby 媒体库路径 |
 
 ## 参考文档
-+ tmdb api 文档：https://developers.themoviedb.org/4
++ tmdb api 文档：https://developers.themoviedb.org/3
 + telegram bot api 文档：https://core.telegram.org/bots/api
