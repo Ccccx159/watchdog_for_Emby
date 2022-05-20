@@ -16,13 +16,13 @@ logging.basicConfig(level=logging.INFO, filename='./watchdog.log', filemode='a+'
                     datefmt='%Y-%m-%d %H:%M:%S')
 
 # 填充电报机器人的token
-TG_BOT_TOKEN = 'your telegram bot token'
+TG_BOT_TOKEN = os.getenv('BOT_TOKEN')
 # 填充电报频道 chat_id
-TG_CHAT_ID = 'your telegram chat id'
+TG_CHAT_ID = os.getenv('CHAT_ID')
 # 填充tmdb api token
-TMDB_API_TOKEN = 'your tmdb api token'
+TMDB_API_TOKEN = os.getenv('TMDB_API')
 # 填充Emby媒体库路径
-EMBY_MEDIA_LIB_PATH = 'your emby media lib path'
+EMBY_MEDIA_LIB_PATH = os.getenv('MEDIA_PATH')
 
 
 def post_movieInfo(media_dir):
@@ -135,9 +135,6 @@ def post_movieInfo(media_dir):
 
 
 def post_episodesInfo(media_dir):
-    media_dir = media_dir[0:media_dir.find('Season')]
-    print(media_dir)
-    media_dir += 'tvshow.nfo'
     tmp_list = list(media_dir)
     i = 0
     le = len(tmp_list)
@@ -150,31 +147,35 @@ def post_episodesInfo(media_dir):
             i += 1
     media_dir = ''.join(tmp_list)
     print(media_dir)
+    # 先从剧集nfo文件中提取当前的season和episode
+    cmd = "xmllint --xpath '//episodedetails/season/text()' " + media_dir
+    media_season = os.popen(cmd).read()[0:len(os.popen(cmd).read())-1]
+    cmd = "xmllint --xpath '//episodedetails/episode/text()' " + media_dir
+    media_episode = os.popen(cmd).read()[0:len(os.popen(cmd).read())-1]
+    print('第'+media_season+'季|第'+media_episode+'集')
+    # 获取剧集id
+    media_dir = media_dir[0:media_dir.find('Season')]
+    # print(media_dir)
+    media_dir += 'tvshow.nfo'
+    # 发行年份
+    cmd = "xmllint --xpath '//tvshow/year/text()' " + media_dir
+    media_year = os.popen(cmd).read()[0:len(os.popen(cmd).read())-1]
     # 剧集imdb id
     cmd = "xmllint --xpath '//tvshow/imdb_id/text()' " + media_dir
-    media_imdbid = os.popen(cmd).read()
+    media_imdbid = os.popen(cmd).read()[0:len(os.popen(cmd).read())-1]
     # 剧集tmdb id
     cmd = "xmllint --xpath '//tvshow/tmdbid/text()' " + media_dir
     media_tmdbid = os.popen(cmd).read()[0:len(os.popen(cmd).read())-1]
-    print(media_tmdbid)
-    print('\n')
+    print('tmdb_id: ' + media_tmdbid)
     # 获取剧集details
-    tmdb_url = 'https://api.themoviedb.org/3/tv/" + media_tmdbid + \
-        "?api_key=' + TMDB_API_TOKEN + '&language=zh-CN'
-    print(tmdb_url)
+    tmdb_url = 'https://api.themoviedb.org/3/tv/' + media_tmdbid + \
+        '?api_key=' + TMDB_API_TOKEN + '&language=zh-CN'
     res_tmdb = requests.get(tmdb_url)
     res_tmdb.encoding = 'utf-8'
-    print(res_tmdb.json())
+    # print(res_tmdb.json())
     # 获取 剧集标题
     media_title = res_tmdb.json()['name']
     print(media_title)
-    # 获取 season id + episodes id
-    media_episode = '第'+str(res_tmdb.json()['last_episode_to_air']['season_number'])+'季 | 第'+str(
-        res_tmdb.json()['last_episode_to_air']['episode_number'])+'集  ' + res_tmdb.json()['last_episode_to_air']['name']
-    print(media_episode)
-    # 获取发布日期
-    media_airDate = res_tmdb.json()['last_episode_to_air']['air_date']
-    print(media_airDate)
     # 获取剧集类型
     media_genres = ''
     for i in range(len(res_tmdb.json()['genres'])):
@@ -185,11 +186,8 @@ def post_episodesInfo(media_dir):
                 res_tmdb.json()['genres'][i]['name'] + '|'
     media_genres = media_genres[0:len(media_genres)-1]
     print(media_genres)
-    # 获取内容简介
-    media_intro = res_tmdb.json()['last_episode_to_air']['overview']
-    print(media_intro)
-    # # 获取评分
-    media_rating = res_tmdb.json()['last_episode_to_air']['vote_average']
+    # 获取评分
+    media_rating = res_tmdb.json()['vote_average']
     print(media_rating)
 
     # 从tmdb获取剧集封面
@@ -197,8 +195,27 @@ def post_episodesInfo(media_dir):
         res_tmdb.json()['poster_path']
     print(media_imgurl)
 
+    # 获取当前集信息
+    tmdb_url = 'https://api.themoviedb.org/3/tv/' + media_tmdbid + '/season/' + media_season + \
+        '/episode/' + media_episode + '?api_key=' + TMDB_API_TOKEN + '&language=zh-CN'
+    print(tmdb_url)
+    res_tmdb = requests.get(tmdb_url)
+    res_tmdb.encoding = 'utf-8'
+    # print(res_tmdb.json())
+    
+    # 获取 season id + episodes id
+    media_epinfo = '第'+media_season+'季 | 第'+media_episode + \
+        '集  '+res_tmdb.json()['name']
+    print(media_epinfo)
+    # 获取发布日期
+    media_airDate = res_tmdb.json()['air_date']
+    print(media_airDate)
+    # 获取内容简介
+    media_intro = res_tmdb.json()['overview']
+    print(media_intro)
+
     # 组装tg_bot的post主体
-    caption = '#影视更新\n\[剧集]\n片名： *' + media_title + '* (' + res_tmdb.json()['seasons'][res_tmdb.json()['last_episode_to_air']['season_number'] - 1]['air_date'] + ')\n剧集： ' + media_episode + '\n类型： ' + media_genres + \
+    caption = '#影视更新\n\[剧集]\n片名： *' + media_title + '* (' + media_year + ')\n剧集： ' + media_epinfo + '\n类型： ' + media_genres + \
               '\n评分： ' + str(media_rating) + '\n\n发布日期： ' + media_airDate + '\n\n内容简介： ' + media_intro + \
               '\n\n相关链接： [TMDB](https://www.themoviedb.org/tv/' + \
               media_tmdbid + '?language=zh-CN) | [IMDB](https://www.imdb.com/title/' + \
