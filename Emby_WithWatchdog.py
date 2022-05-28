@@ -30,7 +30,7 @@ def post_movieInfo(media_dir):
     i = 0
     le = len(tmp_list)
     while i < le:
-        if tmp_list[i] == '(' or tmp_list[i] == ')' or tmp_list[i] == ' ':
+        if tmp_list[i] == '(' or tmp_list[i] == ')' or tmp_list[i] == ' ' or tmp_list[i] == '\'':
             tmp_list.insert(i, '\\')
             le += 1
             i += 2
@@ -139,7 +139,7 @@ def post_episodesInfo(media_dir):
     i = 0
     le = len(tmp_list)
     while i < le:
-        if tmp_list[i] == '(' or tmp_list[i] == ')' or tmp_list[i] == ' ':
+        if tmp_list[i] == '(' or tmp_list[i] == ')' or tmp_list[i] == ' ' or tmp_list[i] == '\'':
             tmp_list.insert(i, '\\')
             le += 1
             i += 2
@@ -251,7 +251,7 @@ class MyHandler(FileSystemEventHandler):
         file_name = os.path.basename(path)
         if file_name.endswith("nfo") and path.find('movies') > 0:
             post_movieInfo(path)
-        elif file_name.endswith("nfo") and path.find('episodes') > 0 and path.find('recycle') < 0 and file_name != 'tvshow.nfo':
+        elif file_name.endswith("nfo") and path.find('episodes') > 0 and path.find('recycle') < 0 and file_name != 'tvshow.nfo' and path.find('eaDir') < 0:
             post_episodesInfo(path)
         else:
             pass
