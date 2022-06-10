@@ -24,13 +24,17 @@ TMDB_API_TOKEN = os.getenv('TMDB_API')
 # 填充Emby媒体库路径
 EMBY_MEDIA_LIB_PATH = os.getenv('MEDIA_PATH')
 
+# 文件名中需额外转义字符
+ESCAPE_CHAR = [' ', '(', ')', '\'']
+# 排除的文件
+EXCLUDE_FILE = ['tvshow.nfo', 'season.nfo']
 
 def post_movieInfo(media_dir):
     tmp_list = list(media_dir)
     i = 0
     le = len(tmp_list)
     while i < le:
-        if tmp_list[i] == '(' or tmp_list[i] == ')' or tmp_list[i] == ' ' or tmp_list[i] == '\'':
+        if tmp_list[i] in ESCAPE_CHAR:
             tmp_list.insert(i, '\\')
             le += 1
             i += 2
@@ -139,7 +143,7 @@ def post_episodesInfo(media_dir):
     i = 0
     le = len(tmp_list)
     while i < le:
-        if tmp_list[i] == '(' or tmp_list[i] == ')' or tmp_list[i] == ' ' or tmp_list[i] == '\'':
+        if tmp_list[i] in ESCAPE_CHAR:
             tmp_list.insert(i, '\\')
             le += 1
             i += 2
@@ -251,7 +255,7 @@ class MyHandler(FileSystemEventHandler):
         file_name = os.path.basename(path)
         if file_name.endswith("nfo") and path.find('movies') > 0:
             post_movieInfo(path)
-        elif file_name.endswith("nfo") and path.find('episodes') > 0 and path.find('recycle') < 0 and file_name != 'tvshow.nfo' and path.find('eaDir') < 0:
+        elif file_name.endswith("nfo") and path.find('episodes') > 0 and path.find('recycle') < 0 and path.find('eaDir') < 0 and file_name not in EXCLUDE_FILE:
             post_episodesInfo(path)
         else:
             pass
