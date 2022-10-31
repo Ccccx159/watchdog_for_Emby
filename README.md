@@ -2,6 +2,7 @@
 ## 修订版本
 | 版本 | 日期 | 修订说明 |
 | :----- | :----- | :----- |
+| V0.000.7 | 2022.10.31 | <li>新增dockerfile，基于ubuntu基础镜像构建，已上传镜像"b1gfac3c4t/overwatch"至hub.docker.com |
 | V0.000.6 | 2022.10.31 | <li>优化过滤条件，"movies"修改为"movie";"episodes"修改为"episode" |
 | V0.000.5 | 2022.10.28 | <li>优化python编码风格，修改log文件存储目录 |
 | V0.000.4 | 2022.08.18 | <li>新增MovieTitleTranslate.py小工具，用于按照刮削后，将电影目录重命名为nfo文件中的\<title\>(\<year\>)，统一所有电影目录的明明风格; |
