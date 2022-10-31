@@ -324,11 +324,11 @@ class MyHandler(FileSystemEventHandler):
     def on_created(self, event):
         path = event.src_path
         file_name = os.path.basename(path)
-        if file_name.endswith("nfo") and path.find('movies') > 0:
+        if file_name.endswith("nfo") and path.find('movie') > 0:
             post_movieInfo(path)
         elif (
             file_name.endswith("nfo")
-            and path.find('episodes') > 0
+            and path.find('episode') > 0
             and path.find('recycle') < 0
             and path.find('eaDir') < 0
             and file_name not in EXCLUDE_FILE
