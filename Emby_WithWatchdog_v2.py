@@ -239,7 +239,7 @@ class Episode(Media):
             '剧集：第%s季|第%s集 %s\n' % (season, episode, res_tmdb.json()['name']),
         )
         self.m_caption = self.m_caption.replace(
-            '{rel}', res_tmdb.json()['air_date']
+            '{rel}', str(res_tmdb.json()['air_date'] or 'no release date')
         )
         self.m_caption = self.m_caption.replace(
             '{intro}', res_tmdb.json()['overview']

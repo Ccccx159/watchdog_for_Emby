@@ -286,7 +286,7 @@ def post_episodesInfo(media_dir):
         + '\n评分： '
         + str(media_rating)
         + '\n\n发布日期： '
-        + media_airDate
+        + str(media_airDate or 'no release date')
         + '\n\n内容简介： '
         + media_intro
         + '\n\n相关链接： [TMDB](https://www.themoviedb.org/tv/'
