@@ -18,12 +18,14 @@ TG_CHAT_ID = os.getenv('CHAT_ID')
 TMDB_API_TOKEN = os.getenv('TMDB_API')
 # 填充Emby媒体库路径
 EMBY_MEDIA_LIB_PATH = os.getenv('MEDIA_PATH')
+#  日志路径
+LOG_PATH = os.getenv('LOG_PATH', "/var/tmp") + '/overwatch.log'
 
 EXCLUDE_FILE = ['tvshow.nfo', 'season.nfo']
 
 logging.basicConfig(
     level=logging.INFO,
-    filename='/home/watchdog.log',
+    filename=LOG_PATH,
     filemode='a+',
     format='%(asctime)s - %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
@@ -54,7 +56,7 @@ class Media:
             + '评分： {rating}\n\n'
             + '上映日期： {rel}\n\n'
             + '内容简介： {intro}\n\n'
-            + '相关链接： [TMDB](https://www.themoviedb.org/movie/{type}?language=zh-CN) | [IMDB](https://www.imdb.com/title/{imdbid}$)\n'
+            + '相关链接： [TMDB](https://www.themoviedb.org/movie/{tmdbid}?language=zh-CN) | [IMDB](https://www.imdb.com/title/{imdbid}$)\n'
         )
 
     def m_PraseNfo(self) -> None:
@@ -287,6 +289,8 @@ class LogHandler(LoggingEventHandler):
 
 class MyHandler(FileSystemEventHandler):
     def on_created(self, event):
+        # 在监测到文件创建后，添加1s延时，避免运行过快导致ET parse失败
+        time.sleep(1)
         path = event.src_path
         file_name = os.path.basename(path)
         if file_name.endswith("nfo") and path.find('movie') > 0:
@@ -314,7 +318,11 @@ if __name__ == '__main__':
 
     log_handler = LogHandler()
     observer.add_handler_for_watch(log_handler, watch)  # 写入日志
-    observer.start()
+    try:
+        observer.start()
+    except Exception as e:
+        print('start err: %s' % str(e.args))
+
 
     try:
         while True:
