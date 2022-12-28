@@ -1,0 +1,16 @@
+FROM python:alpine3.17
+
+LABEL maintainer="Xu@nCh3n"
+
+ENV TZ=Asia/Shanghai LANG=zh_CN.UTF-8
+
+RUN set -eux; \
+        \
+        update-ca-certificates; \
+        \
+        mkdir -p /usr/src/myapp/; \
+        wget -O /usr/src/myapp/mywatchdog.py "https://raw.githubusercontent.com/Ccccx159/Emby_WithWatchdog/main/Emby_WithWatchdog_v2.py"; \
+        python3 -m pip install --no-cache-dir watchdog requests -q; 
+
+ENTRYPOINT ["python3"]
+CMD ["/usr/src/myapp/mywatchdog.py"]

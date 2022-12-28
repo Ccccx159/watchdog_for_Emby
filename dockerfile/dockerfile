@@ -18,7 +18,7 @@ RUN cd /usr/bin \
   && python3 -m pip install --upgrade pip \
   && python3 -m  pip install --no-cache-dir watchdog requests -q
 
-RUN  wget -O /home/Emby_WithWatchdog.py "https://gitlab.b1gfac3c4t.top:3443/xu4nch3n/watchdog_for_EmbyMedia/-/raw/main/Emby_WithWatchdog.py"
+RUN  wget -O /home/Emby_WithWatchdog.py "https://raw.githubusercontent.com/Ccccx159/Emby_WithWatchdog/main/Emby_WithWatchdog.py"
 
 ENTRYPOINT ["python3"]
 CMD ["/home/Emby_WithWatchdog.py"]
