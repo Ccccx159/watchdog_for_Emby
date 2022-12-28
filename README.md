@@ -1,4 +1,4 @@
-# Emby_WithWatchdog
+# Watchdog for Emby Media Server
 ## 修订版本
 
 <mark><font color="red">v1.x版本后续将不再更新维护，如有需要请更新使用v2.x版本！！！</font></mark>
@@ -54,6 +54,16 @@ docker run -d --name=watchdog-emby --restart=unless-stopped \
   b1gfac3c4t/overwatch
   
 ~~~
+
+## 效果展示
+
+电影：
+
+![](https://user-images.githubusercontent.com/35327600/209752390-4e45180b-d8cc-4378-bd98-c489638f7cb7.png)
+
+剧集：
+
+![](https://user-images.githubusercontent.com/35327600/209752275-bad230b0-97a7-47e5-9a77-081afae7d6cf.png)
 
 ## 参考文档
 
