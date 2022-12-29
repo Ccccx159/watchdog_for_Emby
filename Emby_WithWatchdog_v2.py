@@ -56,8 +56,9 @@ class Media:
             + '评分： {rating}\n\n'
             + '上映日期： {rel}\n\n'
             + '内容简介： {intro}\n\n'
-            + '相关链接： [TMDB](https://www.themoviedb.org/movie/{tmdbid}?language=zh-CN) | [IMDB](https://www.imdb.com/title/{imdbid}$)\n'
+            + '相关链接： [TMDB](https://www.themoviedb.org/{type}/{tmdbid}?language=zh-CN) | [IMDB](https://www.imdb.com/title/{imdbid})\n'
         )
+        self.m_caption = self.m_caption.replace('{type}', self.m_type)
 
     def m_PraseNfo(self) -> None:
         print('this is a parent prasing functiong')
@@ -256,18 +257,16 @@ def MajorProcessOnCreate(path: string, type: string) -> None:
         path = path[0 : len(path) - 1]
     if 'movie' == type:
         mediaItem = Movie(path, type)
-    elif 'episode' == type:
-        mediaItem = Episode(path, type)
-    mediaItem.m_PraseNfo()
-    # mediaItem.m_printCaption()
-    # mediaItem.m_post2Bot(mediaItem.m_getPosterImgUrlList())
-    if type == 'movie':
         tmp_path = path[0 : path.rfind('/')]
         name = tmp_path[tmp_path.rfind('/') + 1 :]
-    elif type == 'episode':
+    elif 'tv' == type:
+        mediaItem = Episode(path, type)
         tmp_path = path[0 : path.rfind('/')]
         tmp_path_x = tmp_path[0 : tmp_path.rfind('/')]
         name = tmp_path_x[tmp_path.rfind('/') + 1 :]
+    mediaItem.m_PraseNfo()
+    # mediaItem.m_printCaption()
+    # mediaItem.m_post2Bot(mediaItem.m_getPosterImgUrlList())
     try:
         mediaItem.m_post2Bot(mediaItem.m_getPosterImgUrlList())
     except POST_ERR as e:
@@ -302,7 +301,7 @@ class MyHandler(FileSystemEventHandler):
             and path.find('eaDir') < 0
             and file_name not in EXCLUDE_FILE
         ):
-            MajorProcessOnCreate(path, 'episode')
+            MajorProcessOnCreate(path, 'tv')
         else:
             pass
 

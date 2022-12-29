@@ -114,7 +114,7 @@ def post_movieInfo(media_dir):
         + media_tmdbid
         + '?language=zh-CN) | [IMDB](https://www.imdb.com/title/'
         + media_imdbid
-        + '$)\n'
+        + ')\n'
     )
     print(caption)
 
