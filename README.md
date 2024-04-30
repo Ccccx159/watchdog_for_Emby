@@ -1,4 +1,9 @@
 # Watchdog for Emby Media Server
+
+<mark><font color=red>
+**!!! 基于 Emby Server 原生插件 webhoosk 实现的 Emby Notifier 以发布，不再依赖 Emby 刮削生成 nfo 元数据文件，不在依赖媒体库和媒体文件路径，推送消息效果和本项目一致，对挂载类的网盘媒体库更加友好，详情请参考：[Emby Notifier](https://github.com/Ccccx159/Emby_Notifier) !!!**
+</font></mark>
+
 ## 修订版本
 
 <mark><font color="red">v1.x版本后续将不再更新维护，如有需要请更新使用v2.x版本！！！</font></mark>
